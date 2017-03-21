@@ -1,19 +1,21 @@
 {% extends './_activity-layout.html' %}
 {% load i18n %}
 
-{% block user_options %}  
-    {% if not user_has_actions %}
-        <p class="al-activity-detail-no-action-message">{{why_not_message}}</p>
-    {% elif user in activity.attendants.all %}
-        <form action="leave/{{activity.id}}" method="POST">
-            {% csrf_token %}
-            <input class="al-button al-activity-detail-join-button" type="submit" name="leave_activity" value="{% trans 'Leave' %}"/>
-        </form>
-    {% else %}
-        <form action="join/{{activity.id}}" method="POST">
-            {% csrf_token %}
-            <input class="al-button al-activity-detail-join-button" type="submit" name="join_activity" value="{% trans 'Join' %}"/>
-        </form>
+{% block user_options %} 
+    {% if activity.state == "open" %} 
+        {% if not user_has_actions %}
+            <p class="al-activity-detail-no-action-message">{{why_not_message}}</p>
+        {% elif user in activity.attendants.all %}
+            <form action="leave/{{activity.id}}" method="POST">
+                {% csrf_token %}
+                <input class="al-button al-activity-detail-join-button" type="submit" name="leave_activity" value="{% trans 'Leave' %}"/>
+            </form>
+        {% else %}
+            <form action="join/{{activity.id}}" method="POST">
+                {% csrf_token %}
+                <input class="al-button al-activity-detail-join-button" type="submit" name="join_activity" value="{% trans 'Join' %}"/>
+            </form>
+        {% endif %}
     {% endif %}
 {% endblock %}
 

@@ -80,6 +80,32 @@ def new_activity(request):
         context['form'] = ActivityForm(group_list=user_groups) 
         return render(request, 'Alpaca/shared/layouts/_form-layout.html', context)
 
+@login_required
+def close_activity(request, activity_id):
+    set_translation(request)    
+    user = request.user    
+
+    if user != activity.author:
+        return  HttpResponseRedirect(reverse('alpaca:index'))
+
+    activity = get_object_or_404(Activity, pk=activity_id)
+    activity.close()
+    
+    return HttpResponseRedirect(reverse('alpaca:activity', kwargs={'activity_id': activity_id}))
+    
+@login_required
+def delete_activity(request, activity_id):
+    set_translation(request)    
+    user = request.user    
+
+    if user != activity.author:
+        return  HttpResponseRedirect(reverse('alpaca:index'))
+
+    activity = get_object_or_404(Activity, pk=activity_id)
+    activity.remove()
+
+    return HttpResponseRedirect(reverse('alpaca:index'))
+
 
 @login_required
 def edit_activity(request, activity_id):

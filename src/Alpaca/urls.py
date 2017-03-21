@@ -40,6 +40,8 @@ urlpatterns = [
     url(r'^activity/leave/(?P<activity_id>[0-9]+)$', views.leave_activity, name='leave_activity'),
     url(r'^activity/kick/(?P<activity_id>[0-9]+)$', views.activity_kick_attendant, name='activity_kick_attendant'),
     url(r'^activity/pending/(?P<activity_id>[0-9]+)$', views.activity_pending_requests, name='activity_pending_attendants'),
+    url(r'^activity/(?P<activity_id>[0-9]+)/close/$', views.close_activity, name='close_activity'),
+    url(r'^activity/(?P<activity_id>[0-9]+)/delete/$', views.delete_activity, name='delete_activity'),
 
     url(r'^activity/(?P<activity_id>[0-9]+)/new/$', views.new_session, name='new_session'),
     url(r'^activity/(?P<activity_id>[0-9]+)/edit/(?P<session_id>[0-9]+)$', views.edit_session, name='edit_session'),

@@ -2,9 +2,11 @@
 {% load i18n %}
 
 {% block user_options %}
-    <a class="al-button al-activity-detail-join-button" href="{% url 'alpaca:login' %}">
-        {% trans 'Join' %}
-    </a>
+    {% if activity.state == "open" %}
+        <a class="al-button al-activity-detail-join-button" href="{% url 'alpaca:login' %}">
+            {% trans 'Join' %}
+        </a>
+    {% endif %}
 {% endblock %}
 
 {% block attendants %}

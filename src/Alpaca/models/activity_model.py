@@ -30,7 +30,8 @@ class Activity (models.Model):
     description = models.TextField(max_length=5000)
     city = models.TextField(max_length=100)
     pub_date = models.DateTimeField('publication date')
-   
+    state = models.CharField(max_length=10, default="open")
+
     group = models.ForeignKey(Group, related_name="activity_list", blank=True, null=True)
     pending_group = models.ForeignKey(Group, related_name="pending_activities", blank=True, null=True)
     
@@ -50,7 +51,7 @@ class Activity (models.Model):
     ## ---------------------------------
     ## -- STRINGs
     def __str__(self):
-        return self.pub_date.strftime('(%Y-%m-%d, %H:%M)') + " " + self.title + " - Author: " + self.author.username
+        return self.pub_date.strftime('(%Y-%m-%d, %H:%M)') + " " + self.title + " [" + self.state + "] - Author: " + self.author.username
 
     def __unicode__(self):
         return u'{t}/{d}'.format(t=self.title, d=self.description)
@@ -133,44 +134,65 @@ class Activity (models.Model):
     def new(self, pub_date, new_author):
         self.pub_date = pub_date
         self.author = new_author
+        self.state = "open"
         self.save()  
         email_registered_your_new_activity(self)  
 
     def edit(self, cover, new_group):
-        self.set_cover(new_cover)
-        self.set_group(new_group)
-        self.save()  
-
-        self.save() 
-        for attendant in self.attendants.all():
-            email_activity_got_updated(self, attendant)
+        if self.state == "open":
+            self.set_cover(new_cover)
+            self.set_group(new_group)
+            self.save() 
+            for attendant in self.attendants.all():
+                email_activity_got_updated(self, attendant)
 
     def join(self, user):
-        if self.auto_register:
-            self.attendants.add(user)
-            self.num_attendants = self.attendants.count()
-            email_user_acted_on_your_activity(self, user, True)
-        else:
-            self.pending_attendants.add(user)
-            email_user_requested_to_join(self, user)
-        self.save()
+        if self.state == "open":
+            if self.auto_register:
+                self.attendants.add(user)
+                self.num_attendants = self.attendants.count()
+                email_user_acted_on_your_activity(self, user, True)
+            else:
+                self.pending_attendants.add(user)
+                email_user_requested_to_join(self, user)
+            self.save()
 
     def leave(self, user):
-        self.remove_attendant(user)
-        email_user_acted_on_your_activity(self, user, False)
+        if self.state == "open":
+            self.remove_attendant(user)
+            email_user_acted_on_your_activity(self, user, False)
     
     def kick(self, user):
-        self.remove_attendant(user)
-        email_you_were_kicked_out_from_activity(self, user)
+        if self.state == "open":
+            self.remove_attendant(user)
+            email_you_were_kicked_out_from_activity(self, user)
 
-    def handle_user_request(self, user, is_accepted):
-        if is_accepted:
-            self.attendants.add(user)
-            self.pending_attendants.remove(user)
-            email_your_request_was_handled(self, user, True)
-        else:
-            self.pending_attendants.remove(user)   
-            email_your_request_was_handled(self, user, False)
-            
-        self.num_attendants = self.attendants.count()
+    def handle_user_request(self, user, is_accepted):        
+        if self.state == "open":
+            if is_accepted:
+                self.attendants.add(user)
+                self.pending_attendants.remove(user)
+                email_your_request_was_handled(self, user, True)
+            else:
+                self.pending_attendants.remove(user)   
+                email_your_request_was_handled(self, user, False)
+                
+            self.num_attendants = self.attendants.count()
+            self.save()
+    ## -- CAUTION!!!
+    def close(self):
+        number_of_past_sessions = len(self.get_past_sessions())
+        number_of_future_session = len(self.get_future_sessions())
+
+        if (number_of_past_sessions > 0):
+            self.state = "closed"
+        elif (number_of_future_session > 0):
+            self.state = "canceled"
+        
         self.save()
+
+        #if (len(future_sessions) > 0):
+        #   for each session: session.cancel()
+
+    def remove(self):
+        self.delete()
