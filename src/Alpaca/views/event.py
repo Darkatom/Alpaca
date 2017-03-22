@@ -67,6 +67,31 @@ def new_event(request, group_id):
         context['form'] = EventForm() 
         return render(request, 'Alpaca/shared/layouts/_form-layout.html', context)
 
+@login_required
+def close_event(request, event_id):
+    set_translation(request)    
+    user = request.user    
+    event = get_object_or_404(Event, pk=event_id)
+    
+    if user != event.group.superuser:
+        return  HttpResponseRedirect(reverse('alpaca:index'))
+
+    event.close()
+    
+    return HttpResponseRedirect(reverse('alpaca:event', kwargs={'event_id': event_id}))
+    
+@login_required
+def delete_event(request, event_id):
+    set_translation(request)    
+    user = request.user       
+    event = get_object_or_404(Event, pk=event_id)
+    
+    if user != event.group.superuser:
+        return  HttpResponseRedirect(reverse('alpaca:index'))
+
+    event.remove()
+
+    return HttpResponseRedirect(reverse('alpaca:index'))
 
 @login_required
 def edit_event(request, event_id):

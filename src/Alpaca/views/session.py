@@ -83,4 +83,32 @@ def confirm_session(request, activity_id):
 
     return  HttpResponseRedirect(reverse('alpaca:activity', kwargs={'activity_id': activity_id}))
 
+@login_required
+def close_session(request, activity_id, session_id):
+    set_translation(request)    
+    user = request.user        
+    activity = get_object_or_404(Activity, id=activity_id)   
+    session = get_object_or_404(Session, id=session_id)   
+
+    if user != activity.author:
+        return  HttpResponseRedirect(reverse('alpaca:index'))    
+
+
+    session.close()
+    
+    return HttpResponseRedirect(reverse('alpaca:activity', kwargs={'activity_id': activity_id}))
+    
+@login_required
+def delete_session(request, activity_id, session_id):
+    set_translation(request)    
+    user = request.user   
+    activity = get_object_or_404(Activity, id=activity_id)   
+    session = get_object_or_404(Session, id=session_id)   
+
+    if user != activity.author:
+        return  HttpResponseRedirect(reverse('alpaca:index'))    
+
+    session.remove()
+
+    return HttpResponseRedirect(reverse('alpaca:activity', kwargs={'activity_id': activity_id}))
 

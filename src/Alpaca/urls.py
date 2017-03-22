@@ -32,6 +32,8 @@ urlpatterns = [
     url(r'^group/demote/(?P<group_id>[0-9]+)$', views.demote_admin, name='demote_admin'),
     url(r'^group/members/(?P<group_id>[0-9]+)$', views.group_pending_members, name='group_pending_members'),
     url(r'^group/activities/(?P<group_id>[0-9]+)$', views.group_pending_activities, name='group_pending_activities'),
+    url(r'^group/(?P<group_id>[0-9]+)/close/$', views.close_group, name='close_group'),
+    url(r'^group/(?P<group_id>[0-9]+)/delete/$', views.delete_group, name='delete_group'),
 
     url(r'^activity/new/$', views.new_activity, name='new_activity'),
     url(r'^activity/(?P<activity_id>[0-9]+)$', views.activity, name='activity'),
@@ -46,6 +48,8 @@ urlpatterns = [
     url(r'^activity/(?P<activity_id>[0-9]+)/new/$', views.new_session, name='new_session'),
     url(r'^activity/(?P<activity_id>[0-9]+)/edit/(?P<session_id>[0-9]+)$', views.edit_session, name='edit_session'),
     url(r'^activity/(?P<activity_id>[0-9]+)/confirm/$', views.confirm_session, name='confirm_session'),
+    url(r'^activity/(?P<activity_id>[0-9]+)/(?P<session_id>[0-9]+)/close/$', views.close_session, name='close_session'),
+    url(r'^activity/(?P<activity_id>[0-9]+)/(?P<session_id>[0-9]+)/delete/$', views.delete_session, name='delete_session'),
 
     url(r'^event/new/(?P<group_id>[0-9]+)$', views.new_event, name='new_event'),
     url(r'^event/(?P<event_id>[0-9]+)$', views.event, name='event'),
@@ -56,4 +60,6 @@ urlpatterns = [
     url(r'^event/attendants/(?P<event_id>[0-9]+)$', views.event_pending_attendants, name='event_pending_attendants'),
     url(r'^event/activities/(?P<event_id>[0-9]+)$', views.event_pending_activities, name='event_pending_activities'),
     url(r'^event/(?P<event_id>[0-9]+)/activity/new/$', views.event_new_activity, name='event_new_activity'),
+    url(r'^event/(?P<event_id>[0-9]+)/close/$', views.close_event, name='close_event'),
+    url(r'^event/(?P<event_id>[0-9]+)/delete/$', views.delete_event, name='delete_event'),
 ]

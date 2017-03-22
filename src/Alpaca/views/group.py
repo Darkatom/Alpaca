@@ -58,6 +58,32 @@ def new_group(request):
         return render(request, 'Alpaca/shared/layouts/_form-layout.html', context)
 
 @login_required
+def close_group(request, group_id):
+    set_translation(request)    
+    user = request.user    
+    group = get_object_or_404(Group, pk=group_id)
+
+    if user != group.superuser:
+        return  HttpResponseRedirect(reverse('alpaca:index'))
+
+    group.close()
+    
+    return HttpResponseRedirect(reverse('alpaca:group', kwargs={'group_id': group_id}))
+    
+@login_required
+def delete_group(request, group_id):
+    set_translation(request)    
+    user = request.user   
+    group = get_object_or_404(Group, pk=group_id)
+
+    if user != group.superuser:
+        return  HttpResponseRedirect(reverse('alpaca:index'))
+
+    group.remove()
+
+    return HttpResponseRedirect(reverse('alpaca:index'))
+
+@login_required
 def edit_group(request, group_id):
     set_translation(request)
     user = request.user

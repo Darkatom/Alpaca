@@ -191,8 +191,9 @@ class Activity (models.Model):
         
         self.save()
 
-        #if (len(future_sessions) > 0):
-        #   for each session: session.cancel()
+        for session in self.session_set.all():
+            if not session.has_finished():
+                session.cancel()
 
     def remove(self):
         self.delete()

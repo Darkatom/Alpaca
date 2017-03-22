@@ -22,6 +22,7 @@ import re #RegEx
 class Session (models.Model):
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
     description = models.TextField(max_length=500)
+    state = models.CharField(max_length=10, default="open")
 
     start_date = models.DateTimeField('start date')
     end_date = models.DateTimeField('end date')
@@ -64,3 +65,11 @@ class Session (models.Model):
             self.confirmed_attendants.add(user)
             self.save()
             email_user_confirmed_assistance(self.activity, self, user)
+            
+    ## -- CAUTION!!!
+    def cancel(self):
+        self.state = "canceled"        
+        self.save()
+
+    def remove(self):
+        self.delete()

@@ -25,6 +25,7 @@ class Group (models.Model):
     name = models.CharField(max_length=50, unique=True)
     description = models.TextField(max_length=200)
     email = models.EmailField(max_length=254)
+    state = models.CharField(max_length=10, default="open")
 
     superuser = models.ForeignKey(User, related_name="superuser_of")
     admin_list = models.ManyToManyField(User, related_name="admin_of", blank=True)
@@ -153,3 +154,17 @@ class Group (models.Model):
             #TO-DO: email_your_request_was_handled(self, user, False)
         activity.save()
         self.save()
+    
+    ## -- CAUTION!!!
+    def close(self):
+        self.state = "closed"        
+        self.save()
+
+        for activity in self.activity_set.all():
+            activity.close()
+
+        for event in self.event_set.all():
+            event.close()
+
+    def remove(self):
+        self.delete()

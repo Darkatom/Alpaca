@@ -84,11 +84,11 @@ def new_activity(request):
 def close_activity(request, activity_id):
     set_translation(request)    
     user = request.user    
+    activity = get_object_or_404(Activity, pk=activity_id)
 
     if user != activity.author:
         return  HttpResponseRedirect(reverse('alpaca:index'))
 
-    activity = get_object_or_404(Activity, pk=activity_id)
     activity.close()
     
     return HttpResponseRedirect(reverse('alpaca:activity', kwargs={'activity_id': activity_id}))
@@ -96,12 +96,12 @@ def close_activity(request, activity_id):
 @login_required
 def delete_activity(request, activity_id):
     set_translation(request)    
-    user = request.user    
+    user = request.user   
+    activity = get_object_or_404(Activity, pk=activity_id) 
 
     if user != activity.author:
         return  HttpResponseRedirect(reverse('alpaca:index'))
 
-    activity = get_object_or_404(Activity, pk=activity_id)
     activity.remove()
 
     return HttpResponseRedirect(reverse('alpaca:index'))

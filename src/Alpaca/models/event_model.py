@@ -35,6 +35,7 @@ class Event (models.Model):
     description = models.TextField(max_length=5000)
     city = models.TextField(max_length=100)
     pub_date = models.DateTimeField('publication date')
+    state = models.CharField(max_length=10, default="open")
     
     start_date = models.DateTimeField('start date', default=timezone.now)
     end_date = models.DateTimeField('end date', default=timezone.now)
@@ -61,6 +62,10 @@ class Event (models.Model):
         return u'{t}/{d}'.format(t=self.title, d=self.description)
 
     ## -- GETs    
+    def has_finished(self):
+        now = timezone.now()
+        return now >= self.start_date + datetime.timedelta(minutes=30)
+
     def is_user_old_enough(self, user):
         # http://stackoverflow.com/questions/2217488/age-from-birthdate-in-python/9754466#9754466
         today = timezone.now()
@@ -165,3 +170,18 @@ class Event (models.Model):
             #TO-DO: email_your_request_was_handled(self, user, False)
         activity.save()
         self.save()
+
+    ## -- CAUTION!!!
+    def close(self):        
+        if (self.has_finished()):
+            self.state = "closed"
+        else:
+            self.state = "canceled"
+        
+        self.save()
+        
+        for activity in self.activity_list.all():
+            activity.close()
+
+    def remove(self):
+        self.delete()
