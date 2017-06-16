@@ -9,11 +9,12 @@
 
 ## Setup ##
 
- 1. Go to Alpaca's root folder
- 2. Run `yarn`, this will install front-end dev dependencies.
- 3. Go to `src` folder
- 4. Run `pip install -r requirements.txt`
- 5. Now run `python manage.py migrate` to create the database and apply the migrations.
+ - Go to Alpaca's root folder
+ - Run `yarn`, this will install front-end dev dependencies.
+    - If you are on Windows and the installation process fails while compiling SASS because the build tools are missing, this is the easiest way to get all you need: `npm install --global windows-build-tools`.
+ - Go to `src` folder
+ - Run `pip install -r requirements.txt`
+ - Now run `python manage.py migrate` to create the database and apply the migrations.
 
 ## Run ##
 
