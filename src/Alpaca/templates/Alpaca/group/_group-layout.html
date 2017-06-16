@@ -4,7 +4,9 @@
 {% block content %}
 
     <div class="al-flex-row al-margin-top">
-        <img draggable="false" class="al-rounded" src="{{ group.logo.url }}" width="150px" height="auto"/>
+        {% if group.logo %}
+            <img draggable="false" class="al-rounded" src="{{ group.logo.url }}" width="150px" height="auto"/>
+        {% endif %}
     </div>
 
     <h1 class="al-title al-text-center al-margin-top al-margin-bottom">

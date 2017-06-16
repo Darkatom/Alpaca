@@ -1,7 +1,7 @@
 {% load i18n %}
 
 <a class="al-card" href="{% url 'alpaca:group' group.id %}">
-    {% if group.logo == None or group.logo.name != "False" %}
+    {% if group.logo %}
         <div class="al-card-cover" style="background-image: url({{group.logo.url}});">  
         </div>
     {% endif %}
