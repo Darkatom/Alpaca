@@ -2,7 +2,7 @@
 
 ## Requirements ##
 
- - Node 6.X.X
+ - Node >6.X.X
  - Python >2.7
     - If you're using Anaconda with Python 3,  [maybe this is helpful](http://stackoverflow.com/questions/24405561/how-to-install-2-anacondas-python-2-7-and-3-4-on-mac-os-10-9)
  - Yarn (`npm install -g yarn`)
@@ -13,6 +13,7 @@
  2. Run `yarn`, this will install front-end dev dependencies.
  3. Go to `src` folder
  4. Run `pip install -r requirements.txt`
+ 5. Now run `python manage.py migrate` to create the database and apply the migrations.
 
 ## Run ##
 

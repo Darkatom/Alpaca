@@ -85,8 +85,12 @@
     &-cover-image {
         display: block;
     }
-    &-join-button-wrapper {
+    &-actions {
         padding: 5px 5px 8px 5px;
+
+        &-extra {
+            margin-top: 8px;
+        }
     }
     &-join-button.al-button {
         font-size: 1.8em;
